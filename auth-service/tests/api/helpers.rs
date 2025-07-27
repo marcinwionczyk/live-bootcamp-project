@@ -2,6 +2,8 @@ use auth_service::Application;
 use reqwest::{self, header};
 use serde::{Deserialize, Serialize};
 
+pub static TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaXNTb2NpYWwiOnRyDWV9.4pcPyMD09olPSyXnrXCjTwXyr4BsezdI1AVTmud2fU4";
+
 pub struct TestApp {
     pub address: String,
     pub http_client: reqwest::Client,
