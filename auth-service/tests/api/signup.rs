@@ -1,4 +1,4 @@
-use crate::helpers::{get_random_email, SignupRequest, TestApp};
+use crate::helpers::{get_random_email, TestApp};
 
 
 #[tokio::test]
