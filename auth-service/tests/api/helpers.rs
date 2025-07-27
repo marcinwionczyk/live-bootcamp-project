@@ -1,6 +1,7 @@
 use auth_service::Application;
 use reqwest::{self, header};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 pub static TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaXNTb2NpYWwiOnRyDWV9.4pcPyMD09olPSyXnrXCjTwXyr4BsezdI1AVTmud2fU4";
 
@@ -67,14 +68,15 @@ impl TestApp {
     }
 
     // TODO: Implement helper functions for all other routes (signup, login, logout, verify-2fa, and verify-token)
-    pub async fn post_signup(&self, signup_request: SignupRequest) -> reqwest::Response {
+    pub async fn post_signup<Body>(&self, body: &Body) -> reqwest::Response where Body: Serialize {
         self.http_client
             .post(&format!("{}/signup", &self.address))
-            .json(&signup_request)
+            .json(&body)
             .send()
             .await
             .expect("Failed to execute request.")
     }
+
 
     pub async fn post_login(&self, login_request: LoginRequest) -> reqwest::Response {
         self.http_client
@@ -114,4 +116,8 @@ impl TestApp {
             .await
             .expect("Failed to execute request.")
     }
+}
+
+pub fn get_random_email() -> String {
+    format!("{}@example.com", Uuid::new_v4())
 }
