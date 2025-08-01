@@ -45,7 +45,7 @@ jobs:
         host: ${{ vars.DROPLET_IP }}
         username: root
         password: ${{ secrets.DROPLET_PASSWORD }}
-        script:
+        script: |
           cd ~
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           docker compose down
