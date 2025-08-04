@@ -1,7 +1,9 @@
-use auth_service::Application;
+use auth_service::{AppState, Application, UserStoreType};
 use reqwest::{self, header};
 use serde::{Deserialize, Serialize};
+use tokio::sync::RwLock;
 use uuid::Uuid;
+use auth_service::services::hasmap_user_store::HashmapUserStore;
 
 pub static TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaXNTb2NpYWwiOnRyDWV9.4pcPyMD09olPSyXnrXCjTwXyr4BsezdI1AVTmud2fU4";
 
@@ -39,7 +41,9 @@ pub struct VerifyTokenRequest {
 }
 impl TestApp {
     pub async fn new() -> Self {
-        let app = Application::build("127.0.0.1:0")
+        let user_store = UserStoreType::new(RwLock::new(HashmapUserStore::default()));
+        let app_state = AppState::new(user_store);
+        let app = Application::build(app_state, "127.0.0.1:0")
             .await
             .expect("Failed to build app");
 
@@ -52,7 +56,7 @@ impl TestApp {
 
         let http_client = reqwest::Client::new(); // Create a Reqwest http client instance
 
-        // Create new `TestApp` instance and return it
+        // Create a new ` TestApp ` instance and return it
         Self {
             address,
             http_client,
