@@ -1,4 +1,5 @@
-use auth_service::{AppState, Application, UserStoreType};
+use std::sync::Arc;
+use auth_service::{AppState, Application};
 use reqwest::{self, header};
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
@@ -41,7 +42,7 @@ pub struct VerifyTokenRequest {
 }
 impl TestApp {
     pub async fn new() -> Self {
-        let user_store = UserStoreType::new(RwLock::new(HashmapUserStore::default()));
+        let user_store = Arc::new(RwLock::new(HashmapUserStore::default()));
         let app_state = AppState::new(user_store);
         let app = Application::build(app_state, "127.0.0.1:0")
             .await
