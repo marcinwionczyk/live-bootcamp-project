@@ -1,3 +1,5 @@
 mod user;
-pub use user::*;
+mod error;
 
+pub use user::*;
+pub use error::*;
