@@ -1,3 +1,4 @@
+use crate::domain::UserStore;
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -10,7 +11,6 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tower_http::services::ServeDir;
-use crate::domain::UserStore;
 
 // Using a type alias to improve readability!
 pub type UserStoreType = Arc<RwLock<dyn UserStore + Send + Sync>>;

@@ -1,6 +1,8 @@
+use auth_service::{
+    services::hasmap_user_store::HashmapUserStore, AppState, Application, UserStoreType,
+};
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use auth_service::{Application, UserStoreType, services::hasmap_user_store::HashmapUserStore, AppState};
 
 #[tokio::main]
 async fn main() {
