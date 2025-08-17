@@ -24,11 +24,10 @@ pub async fn signup(
     Json(request): Json<SignupRequest>,
 ) -> Result<impl IntoResponse, AuthAPIError> {
     let email = Email(request.email)
-        .parse()
-        .map_err(|_| AuthAPIError::InvalidCredentials)?;
+        .parse()?;
+
     let password = Password(request.password)
-        .parse()
-        .map_err(|_| AuthAPIError::InvalidCredentials)?;
+        .parse()?;
     let user = User::new(email.as_str(), password.as_str(), request.requires_2fa);
     let mut user_store = state.user_store.write().await;
     if user_store.get_user(&user.email).await.is_ok() {

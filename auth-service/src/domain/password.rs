@@ -1,4 +1,5 @@
-use crate::domain::UserStoreError;
+use std::fmt::Display;
+use crate::domain::AuthAPIError;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Password(pub String);
 
@@ -8,11 +9,17 @@ impl AsRef<str> for &Password {
     }
 }
 
+impl Display for Password {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 impl Password {
-    pub(crate) fn parse(&self) -> Result<String, UserStoreError> {
+    pub(crate) fn parse(&self) -> Result<String, AuthAPIError> {
         match &self.0.len() {
             8.. => Ok(self.0.clone()),
-            _ => Err(UserStoreError::InvalidCredentials),
+            _ => Err(AuthAPIError::InvalidCredentials),
         }
     }
 }
@@ -23,6 +30,6 @@ mod tests {
     #[test]
     fn test_password_parse() {
         let password = Password("".to_string());
-        assert_eq!(password.parse(), Err(UserStoreError::InvalidCredentials));
+        assert_eq!(password.parse(), Err(AuthAPIError::InvalidCredentials));
     }
 }

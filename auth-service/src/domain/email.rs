@@ -1,4 +1,4 @@
-use crate::domain::UserStoreError;
+use crate::domain::AuthAPIError;
 use std::fmt::Display;
 use std::hash::Hash;
 use validator::validate_email;
@@ -17,10 +17,10 @@ impl Display for Email {
     }
 }
 impl Email {
-    pub(crate) fn parse(&self) -> Result<String, UserStoreError> {
+    pub(crate) fn parse(&self) -> Result<String, AuthAPIError> {
         match validate_email(&self.0) {
             true => Ok(self.0.clone()),
-            false => Err(UserStoreError::InvalidCredentials),
+            false => Err(AuthAPIError::InvalidCredentials),
         }
     }
 }
