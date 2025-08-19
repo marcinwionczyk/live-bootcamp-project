@@ -1,10 +1,10 @@
-use std::sync::Arc;
+use auth_service::services::hasmap_user_store::HashmapUserStore;
 use auth_service::{AppState, Application};
 use reqwest::{self, header};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-use auth_service::services::hasmap_user_store::HashmapUserStore;
 
 pub static TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaXNTb2NpYWwiOnRyDWV9.4pcPyMD09olPSyXnrXCjTwXyr4BsezdI1AVTmud2fU4";
 
@@ -19,12 +19,6 @@ pub struct SignupRequest {
     pub password: String,
     #[serde(rename = "requires2FA")]
     pub requires_2_fa: bool,
-}
-
-#[derive(Serialize)]
-pub struct LoginRequest {
-    pub email: String,
-    pub password: String,
 }
 
 #[derive(Serialize)]
@@ -73,7 +67,10 @@ impl TestApp {
     }
 
     // TODO: Implement helper functions for all other routes (signup, login, logout, verify-2fa, and verify-token)
-    pub async fn post_signup<Body>(&self, body: &Body) -> reqwest::Response where Body: Serialize {
+    pub async fn post_signup<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: Serialize,
+    {
         self.http_client
             .post(&format!("{}/signup", &self.address))
             .json(&body)
@@ -82,11 +79,13 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-
-    pub async fn post_login(&self, login_request: LoginRequest) -> reqwest::Response {
+    pub async fn post_login<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: Serialize,
+    {
         self.http_client
             .post(&format!("{}/login", &self.address))
-            .json(&login_request)
+            .json(body)
             .send()
             .await
             .expect("Failed to execute request.")

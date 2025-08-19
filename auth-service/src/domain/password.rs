@@ -1,5 +1,5 @@
-use std::fmt::Display;
 use crate::domain::AuthAPIError;
+use std::fmt::Display;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Password(pub String);
 
@@ -19,7 +19,7 @@ impl Password {
     pub(crate) fn parse(&self) -> Result<String, AuthAPIError> {
         match &self.0.len() {
             8.. => Ok(self.0.clone()),
-            _ => Err(AuthAPIError::InvalidCredentials),
+            _ => Err(AuthAPIError::UnprocessableContent),
         }
     }
 }
@@ -30,6 +30,6 @@ mod tests {
     #[test]
     fn test_password_parse() {
         let password = Password("".to_string());
-        assert_eq!(password.parse(), Err(AuthAPIError::InvalidCredentials));
+        assert_eq!(password.parse(), Err(AuthAPIError::UnprocessableContent));
     }
 }

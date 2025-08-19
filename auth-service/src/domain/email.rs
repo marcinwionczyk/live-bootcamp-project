@@ -20,7 +20,7 @@ impl Email {
     pub(crate) fn parse(&self) -> Result<String, AuthAPIError> {
         match validate_email(&self.0) {
             true => Ok(self.0.clone()),
-            false => Err(AuthAPIError::InvalidCredentials),
+            false => Err(AuthAPIError::UnprocessableContent),
         }
     }
 }
