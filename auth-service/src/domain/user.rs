@@ -1,8 +1,6 @@
-use crate::domain::{Email, Password};
+use super::{Email, Password};
 
-// The User struct should contain 3 fields. email, which is a String;
-// password, which is also a String; and requires_2fa, which is a boolean.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct User {
     pub email: Email,
     pub password: Password,
@@ -10,10 +8,10 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(email: &str, password: &str, requires_2fa: bool) -> Self {
+    pub fn new(email: Email, password: Password, requires_2fa: bool) -> Self {
         Self {
-            email: Email(email.to_string()),
-            password: Password(password.to_string()),
+            email,
+            password,
             requires_2fa,
         }
     }

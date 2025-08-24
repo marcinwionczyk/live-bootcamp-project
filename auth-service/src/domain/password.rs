@@ -1,35 +1,55 @@
-use crate::domain::AuthAPIError;
-use std::fmt::Display;
-#[derive(Clone, Debug, PartialEq)]
-pub struct Password(pub String);
+#[derive(Debug, Clone, PartialEq)]
+pub struct Password(String);
 
-impl AsRef<str> for &Password {
+impl Password {
+    pub fn parse(s: String) -> Result<Password, String> {
+        if validate_password(&s) {
+            Ok(Self(s))
+        } else {
+            Err("Failed to parse string to a Password type".to_owned())
+        }
+    }
+}
+
+fn validate_password(s: &str) -> bool {
+    s.len() >= 8
+}
+
+impl AsRef<str> for Password {
     fn as_ref(&self) -> &str {
         &self.0
     }
 }
 
-impl Display for Password {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-impl Password {
-    pub(crate) fn parse(&self) -> Result<String, AuthAPIError> {
-        match &self.0.len() {
-            8.. => Ok(self.0.clone()),
-            _ => Err(AuthAPIError::UnprocessableContent),
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::Password;
+
+    use fake::faker::internet::en::Password as FakePassword;
+    use fake::Fake;
+
     #[test]
-    fn test_password_parse() {
-        let password = Password("".to_string());
-        assert_eq!(password.parse(), Err(AuthAPIError::UnprocessableContent));
+    fn empty_string_is_rejected() {
+        let password = "".to_owned();
+        assert!(Password::parse(password).is_err());
+    }
+    #[test]
+    fn string_less_than_8_characters_is_rejected() {
+        let password = "1234567".to_owned();
+        assert!(Password::parse(password).is_err());
+    }
+
+    #[derive(Debug, Clone)]
+    struct ValidPasswordFixture(pub String);
+
+    impl quickcheck::Arbitrary for ValidPasswordFixture {
+        fn arbitrary<G: quickcheck::Gen>(g: &mut G) -> Self {
+            let password = FakePassword(8..30).fake_with_rng(g);
+            Self(password)
+        }
+    }
+    #[quickcheck_macros::quickcheck]
+    fn valid_passwords_are_parsed_successfully(valid_password: ValidPasswordFixture) -> bool {
+        Password::parse(valid_password.0).is_ok()
     }
 }

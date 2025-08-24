@@ -1,5 +1,5 @@
-mod data_stores;
-mod email;
+pub(crate) mod data_stores;
+pub(crate) mod email;
 mod error;
 mod password;
 mod user;
