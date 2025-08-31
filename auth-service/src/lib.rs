@@ -9,7 +9,7 @@ use axum::{
     Json, Router,
 };
 use domain::AuthAPIError;
-use routes::{login, logout, signup, verify2fa, verify_token};
+use routes::{login, logout, signup, verify_2fa, verify_token};
 use serde::{Deserialize, Serialize};
 use tower_http::{cors::CorsLayer, services::ServeDir};
 
@@ -40,7 +40,7 @@ impl Application {
             .nest_service("/", ServeDir::new("assets"))
             .route("/signup", post(signup))
             .route("/login", post(login))
-            .route("/verify-2fa", post(verify2fa))
+            .route("/verify-2fa", post(verify_2fa))
             .route("/logout", post(logout))
             .route("/verify-token", post(verify_token))
             .with_state(app_state)

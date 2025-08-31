@@ -100,12 +100,12 @@ mod tests {
             requires_2fa: false,
         };
 
-        // Test validating a user that exists with the correct password
+        // Test validating a user that exists with correct password
         user_store.users.insert(email.clone(), user.clone());
         let result = user_store.validate_user(&email, &password).await;
         assert_eq!(result, Ok(()));
 
-        // Test validating a user that exists with an incorrect password
+        // Test validating a user that exists with incorrect password
         let wrong_password = Password::parse("wrongpassword".to_owned()).unwrap();
         let result = user_store.validate_user(&email, &wrong_password).await;
         assert_eq!(result, Err(UserStoreError::InvalidCredentials));
