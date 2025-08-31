@@ -3,7 +3,7 @@ use auth_service::{
     domain::{Email, LoginAttemptId, TwoFACode},
     routes::TwoFactorAuthResponse,
     utils::constants::JWT_COOKIE_NAME,
-    ErrorResponse
+    ErrorResponse,
 };
 
 #[tokio::test]
@@ -23,13 +23,20 @@ async fn should_return_200_if_correct_code() {
     });
     let response = app.post_login(&login_body).await;
     assert_eq!(response.status().as_u16(), 206);
-    let response_body = response.json::<TwoFactorAuthResponse>().await
+    let response_body = response
+        .json::<TwoFactorAuthResponse>()
+        .await
         .expect("Could not deserialize two-factor response body.");
     assert_eq!(response_body.message, "2FA required".to_owned());
     assert!(!response_body.login_attempt_id.is_empty());
     let login_attempt_id = response_body.login_attempt_id;
-    let code_tuple = app.two_fa_code_store.read().await
-        .get_code(&Email::parse(random_email.clone()).unwrap()).await.unwrap();
+    let code_tuple = app
+        .two_fa_code_store
+        .read()
+        .await
+        .get_code(&Email::parse(random_email.clone()).unwrap())
+        .await
+        .unwrap();
     let code = code_tuple.1.as_ref();
     let request_body = serde_json::json! ({
         "email": random_email,
@@ -38,7 +45,9 @@ async fn should_return_200_if_correct_code() {
     });
     let response = app.post_verify_2fa(&request_body).await;
     assert_eq!(response.status().as_u16(), 200);
-    let auth_cookie = response.cookies().find(|cookie| {cookie.name() == JWT_COOKIE_NAME})
+    let auth_cookie = response
+        .cookies()
+        .find(|cookie| cookie.name() == JWT_COOKIE_NAME)
         .expect("Auth cookie not found");
     assert!(!auth_cookie.value().is_empty());
 }
