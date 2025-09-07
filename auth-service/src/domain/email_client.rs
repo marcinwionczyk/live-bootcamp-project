@@ -1,4 +1,5 @@
 use super::Email;
+
 #[async_trait::async_trait]
 pub trait EmailClient {
     async fn send_email(

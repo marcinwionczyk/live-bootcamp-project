@@ -96,9 +96,9 @@ mod tests {
     use std::sync::Arc;
     use tokio::sync::RwLock;
 
+    use crate::{domain::BannedTokenStore, services::data_stores::HashsetBannedTokenStore};
+
     use super::*;
-    use crate::domain::BannedTokenStore;
-    use crate::services::data_stores::hashset_banned_token_store::HashsetBannedTokenStore;
 
     #[tokio::test]
     async fn test_generate_auth_cookie() {

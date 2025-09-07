@@ -19,21 +19,23 @@ fn set_token() -> String {
 
 fn set_db_url() -> String {
     dotenv().ok();
-    std::env::var(env::DATABASE_URL_ENV_VAR).expect("DATABASE URL must be set.")
+    std_env::var(env::DATABASE_URL_ENV_VAR).expect("DATABASE_URL must be set.")
 }
 
 fn set_redis_host() -> String {
     dotenv().ok();
-    std::env::var(env::REDIS_HOST_NAME_ENV_VAR).unwrap_or(DEFAULT_REDIS_HOSTNAME.to_owned())
+    std_env::var(env::REDIS_HOST_NAME_ENV_VAR).unwrap_or(DEFAULT_REDIS_HOSTNAME.to_owned())
 }
+
 pub mod env {
-    pub const JWT_SECRET_ENV_VAR: &str = "JWT_SECRET";
     pub const DATABASE_URL_ENV_VAR: &str = "DATABASE_URL";
+    pub const JWT_SECRET_ENV_VAR: &str = "JWT_SECRET";
     pub const REDIS_HOST_NAME_ENV_VAR: &str = "REDIS_HOST_NAME";
 }
 
 pub const JWT_COOKIE_NAME: &str = "jwt";
-pub const DEFAULT_REDIS_HOSTNAME: &str = "127.0.0.1"; // New!
+pub const DEFAULT_REDIS_HOSTNAME: &str = "127.0.0.1";
+
 pub mod prod {
     pub const APP_ADDRESS: &str = "0.0.0.0:3000";
 }
