@@ -64,7 +64,7 @@ jobs:
         run: |
           # Wait for Postgres to be ready
           for i in {1..30}; do
-            if pg_ready -h localhost -p 5432 -U postgres; then
+            if pg_isready -h localhost -p 5432 -U postgres; then
               echo "Postgres is ready"
               break
             fi
