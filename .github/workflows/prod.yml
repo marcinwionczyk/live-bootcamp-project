@@ -55,7 +55,28 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-
+      - name: Install PostgresSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Prepare SQLx cache for auth-service
+        working-directory: ./auth-service
+        env:
+          DATABASE_URL: postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/postgres
+        run: |
+          # Wait for Postgres to be ready
+          for i in {1..30}; do
+            if pg_ready -h localhost -p 5432 -U postgres; then
+              echo "Postgres is ready"
+              break
+            fi
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+          # Install sqlx-cli (with postgres + rustls)
+          cargo install sqlx-cli --no-default-features --features postgres,rustls
+          # Run migrations to ensure schema exists
+          sqlx migrate run
+          # Generate SQLX offline cache
+          cargo sqlx prepare
       - name: Build and test app-service code
         working-directory: ./app-service
         run: |
@@ -64,9 +85,10 @@ jobs:
 
       - name: Build and test auth-service code
         working-directory: ./auth-service
+        env:
+          JWT_SECRET: secret
+          DATABASE_URL: postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/postgres
         run: |
-          export JWT_SECRET=secret
-          export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
           cargo build --verbose
           cargo test --verbose
 
