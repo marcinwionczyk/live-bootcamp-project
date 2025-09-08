@@ -21,6 +21,7 @@ use tokio::sync::RwLock;
 use std::str::FromStr;
 use uuid::Uuid;
 
+#[allow(dead_code)]
 pub struct TestApp {
     pub address: String,
     pub cookie_jar: Arc<Jar>,
@@ -31,6 +32,7 @@ pub struct TestApp {
     pub clean_up_called: bool,
 }
 
+#[allow(dead_code)]
 impl TestApp {
     pub async fn new() -> Self {
         let db_name = Uuid::new_v4().to_string();
@@ -170,6 +172,7 @@ impl AsyncTestContext for TestApp {
     }
 }
 
+#[allow(dead_code)]
 pub fn get_random_email() -> String {
     format!("{}@example.com", Uuid::new_v4())
 }

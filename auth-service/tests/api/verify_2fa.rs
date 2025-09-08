@@ -2,8 +2,7 @@ use crate::helpers::{get_random_email, TestApp};
 use auth_service::{
     domain::{Email, LoginAttemptId, TwoFACode},
     routes::TwoFactorAuthResponse,
-    utils::constants::JWT_COOKIE_NAME,
-    Application, ErrorResponse,
+    utils::constants::JWT_COOKIE_NAME, ErrorResponse,
 };
 use test_context::test_context;
 #[test_context(TestApp)]
